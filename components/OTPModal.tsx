@@ -34,7 +34,7 @@ function OTPModal({ email, accountId }: {email: string, accountId: string}) {
 
     try {
       const session = await verifySecret({ accountId, password})
-      console.log(session)
+      
       if(session) router.push('/')
     } catch (error) {
       console.log("Failed to varify OTP", error)
