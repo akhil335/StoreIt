@@ -21,7 +21,8 @@ const getUserByEmail = async ( email: string ) => {
 }
 
 const handleError = (error: unknown, message: string) => {
-    throw error
+        const errorMessage = error instanceof Error ? error.message : String(error)
+    return parseStringify({ error: errorMessage, message })
 }
 
 export const sendEmailOTP = async ( {email}: { email: string } ) => {
@@ -65,7 +66,7 @@ export const createAccount = async ( {
 } ) => {
     const existingUser = await getUserByEmail(email)
     const accountId = await sendEmailOTP({ email })
-
+   
     if(!accountId) throw new Error("Failed to send OTP")
     
     if(!existingUser) {
@@ -130,7 +131,7 @@ export const signInUser = async ({ email }: { email: string }) => {
 
     try {
         const existingUser = await getUserByEmail(email)
-
+        
         // User exists, send OTP
         if(existingUser) {
             await sendEmailOTP({ email })
@@ -139,6 +140,6 @@ export const signInUser = async ({ email }: { email: string }) => {
 
         return parseStringify({ accountId: null, error: 'User not found' })
     }catch( error ) {
-        handleError(error, "Failed to sign in user")
+        return handleError(error, "Failed to sign in user")
     }
 } 
